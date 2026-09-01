@@ -1,0 +1,19 @@
+{
+  "name": "Stream Deck",
+  "short_name": "Deck",
+  "description": "Tablet control surface for OBS and stream music",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0b0d13",
+  "theme_color": "#0b0d13",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='34' fill='%230b0d13'/%3E%3Cg fill='%234f5bd5'%3E%3Crect x='30' y='30' width='58' height='58' rx='11'/%3E%3Crect x='104' y='30' width='58' height='58' rx='11'/%3E%3Crect x='30' y='104' width='58' height='58' rx='11'/%3E%3C/g%3E%3Crect x='104' y='104' width='58' height='58' rx='11' fill='%234ade80'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

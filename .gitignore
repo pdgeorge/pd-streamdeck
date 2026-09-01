@@ -1,0 +1,17 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# The music library itself is not source. Keep the mood folders, drop the audio.
+songs/**/*.mp3
+songs/**/*.ogg
+songs/**/*.wav
+songs/**/*.m4a
+songs/**/*.flac
+songs/**/*.opus
+!songs/**/.gitkeep
+
+# Local overrides of the button layout
+deck.local.yaml

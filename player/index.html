@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pd-streamdeck music player</title>
+<link rel="stylesheet" href="player.css">
+</head>
+<body>
+<!--
+  OBS browser source. Audio-only: the page renders nothing unless you add
+  ?debug=1, which shows a status panel for setup and troubleshooting.
+
+  Add as a browser source pointing at:
+      http://<pi>:8095/player/?token=<DECK_TOKEN>
+  Set the source's audio monitoring to "Monitor and Output" so you hear the
+  music locally as well as on stream.
+-->
+<div id="debug" class="hidden">
+  <div class="row"><span class="key">socket</span><span id="d-socket">connecting</span></div>
+  <div class="row"><span class="key">state</span><span id="d-state">idle</span></div>
+  <div class="row"><span class="key">mood</span><span id="d-mood">-</span></div>
+  <div class="row"><span class="key">track</span><span id="d-track">-</span></div>
+  <div class="row"><span class="key">volume</span><span id="d-volume">-</span></div>
+  <div class="row"><span class="key">audio ctx</span><span id="d-ctx">-</span></div>
+</div>
+<script src="player.js"></script>
+</body>
+</html>

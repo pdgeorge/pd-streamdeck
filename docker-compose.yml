@@ -1,0 +1,36 @@
+services:
+  deck_controller:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pd-streamdeck
+    env_file:
+      - .env
+    environment:
+      DECK_HTTP_PORT: ${DECK_HTTP_PORT:-8095}
+      DECK_CONFIG: /config/deck.yaml
+      MUSIC_LIBRARY: /songs
+      OBS_HOST: ${OBS_HOST:-cachyowo}
+      OBS_PORT: ${OBS_PORT:-4455}
+      RABBITMQ_URL: ${RABBITMQ_URL:-amqp://overlay:strongpassword@rabbitmq:5672/}
+      TWITCH_EXCHANGE: ${TWITCH_EXCHANGE:-twitch_events}
+      DABI_EXCHANGE: ${DABI_EXCHANGE:-dabi_events}
+    volumes:
+      # Button layout and music library are data, not image contents --
+      # edit either without a rebuild.
+      - ./deck.yaml:/config/deck.yaml:ro
+      - ./songs:/songs:ro
+      # Bind-mounting the front-end matches the pattern used by
+      # overlay_controller: tweak the UI, reload the tablet, no rebuild.
+      - ./deck:/app/deck:ro
+      - ./player:/app/player:ro
+    ports:
+      - "${DECK_HTTP_PORT:-8095}:${DECK_HTTP_PORT:-8095}"
+    restart: unless-stopped
+    networks:
+      # Joins the existing broadcaster network so `rabbitmq` resolves by name.
+      - twitchbroadcaster_net
+
+networks:
+  twitchbroadcaster_net:
+    external: true

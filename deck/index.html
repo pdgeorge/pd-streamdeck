@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0b0d13">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Stream Deck</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="deck.css">
+</head>
+<body>
+
+<header id="bar">
+  <div class="status">
+    <span class="dot" id="dot-obs" title="OBS">OBS</span>
+    <span class="dot" id="dot-bus" title="RabbitMQ">BUS</span>
+    <span class="dot" id="dot-player" title="Music page in OBS">SND</span>
+  </div>
+  <nav id="tabs"></nav>
+</header>
+
+<!--
+  Always visible, so you can set the level before the music starts rather
+  than discovering it's too loud once it's already on stream.
+-->
+<section id="transport">
+  <div class="np-line">
+    <span class="np-icon" id="np-icon">♪</span>
+    <span id="np-track">No music</span>
+    <span id="np-mood" class="np-mood"></span>
+    <span id="np-time" class="np-time"></span>
+  </div>
+  <div class="np-bar"><div id="np-progress"></div></div>
+  <div class="vol-row">
+    <span class="vol-icon">🔈</span>
+    <input id="vol" type="range" min="0" max="100" step="1" value="60"
+           aria-label="Music volume">
+    <span id="vol-pct">60%</span>
+  </div>
+</section>
+
+<main id="grid"></main>
+
+<div id="toast" class="hidden"></div>
+
+<div id="gate" class="hidden">
+  <div class="gate-card">
+    <h1>Deck token</h1>
+    <p>This deck needs the token from the Pi's <code>.env</code> file.</p>
+    <input id="gate-input" type="password" autocomplete="off" placeholder="DECK_TOKEN">
+    <button id="gate-save">Connect</button>
+  </div>
+</div>
+
+<script src="deck.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+simpleobsws
+aio-pika
+PyYAML
+python-dotenv

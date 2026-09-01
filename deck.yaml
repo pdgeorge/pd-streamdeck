@@ -1,0 +1,202 @@
+# ---------------------------------------------------------------------------
+# pd-streamdeck button layout
+#
+# This file is the whole UI. Adding a button never needs a code change.
+# Edit it, then either restart the container or POST /api/config/reload.
+#
+# Everything named here was read from live OBS (collection "Pd", profile
+# "Cyra"), not from the scene JSON on disk -- which was stale. Scene names
+# are re-checked against OBS on every connect, so if you rename one the
+# button greys out with the reason instead of silently doing nothing.
+# ---------------------------------------------------------------------------
+
+music:
+  # Don't replay any of the last N tracks picked from the same mood. Keeps
+  # "random" from landing on the same song twice in a row. Capped
+  # automatically at one less than the folder size.
+  no_repeat_window: 3
+  # Crossfade length in seconds when switching moods or stopping.
+  fade_seconds: 2.0
+  default_volume: 0.6
+  # When a track finishes, pick another from the same mood and keep going.
+  # Set false if you want one song per press.
+  loop_mood: true
+
+pages:
+  - name: Scenes
+    columns: 4
+    buttons:
+      - label: Starting
+        icon: "🎬"
+        color: indigo
+        action: obs.scene
+        scene: Starting
+
+      - label: Just Chatting
+        icon: "💬"
+        color: indigo
+        action: obs.scene
+        scene: Just Chatting
+
+      - label: Main
+        icon: "🎮"
+        color: indigo
+        action: obs.scene
+        scene: Ingame-PostDebut
+
+      # Deliberately NOT 'Cam' or 'RandomBS': neither contains a single audio
+      # source, so switching to one mid-stream drops mic, desktop and Discord
+      # at once. They look like scratch scenes. FullscreenVid is the real
+      # screen-share scene and carries Default + Discord.
+      - label: Screen
+        icon: "🖵"
+        color: indigo
+        action: obs.scene
+        scene: FullscreenVid
+
+      - label: BRB
+        icon: "☕"
+        color: slate
+        action: obs.scene
+        scene: Be Right Back
+
+      - label: Parenting
+        icon: "🍼"
+        color: slate
+        action: obs.scene
+        scene: Parenting
+
+      - label: Webcam
+        icon: "🖥️"
+        color: slate
+        action: obs.scene
+        scene: FullscreenWebcam
+
+      - label: End
+        icon: "🏁"
+        color: slate
+        action: obs.scene
+        scene: End
+
+  - name: Music
+    columns: 4
+    buttons:
+      - label: Sad
+        icon: "😢"
+        color: sky
+        action: music.mood
+        mood: sad
+
+      - label: Hype
+        icon: "🔥"
+        color: rose
+        action: music.mood
+        mood: hype
+
+      - label: Chill
+        icon: "🌙"
+        color: violet
+        action: music.mood
+        mood: chill
+
+      - label: Tension
+        icon: "😬"
+        color: amber
+        action: music.mood
+        mood: tension
+
+      - label: Skip
+        icon: "⏭️"
+        color: slate
+        action: music.skip
+
+      - label: Stop
+        icon: "⏹️"
+        color: slate
+        action: music.stop
+
+      - label: Quieter
+        icon: "🔉"
+        color: slate
+        action: music.volume
+        delta: -0.1
+
+      - label: Louder
+        icon: "🔊"
+        color: slate
+        action: music.volume
+        delta: 0.1
+
+  - name: Live
+    columns: 4
+    buttons:
+      # 'Microphone', 'Discord' and 'Default' are the real pulse inputs.
+      # ('Mic/Aux' and 'Desktop Audio' exist in your config but are
+      # wasapi_* -- Windows leftovers that Linux OBS can't drive.)
+      - label: Mic
+        icon: "🎙️"
+        color: amber
+        action: obs.mute
+        input: Microphone
+        indicator: mute
+
+      - label: Discord
+        icon: "🎧"
+        color: amber
+        action: obs.mute
+        input: Discord
+        indicator: mute
+
+      - label: Desktop
+        icon: "🔈"
+        color: amber
+        action: obs.mute
+        input: Default
+        indicator: mute
+
+      # Alert sounds blaring over a sad moment is the classic mood-killer,
+      # so this sits one tap away from the Music page.
+      - label: Alerts
+        icon: "🔔"
+        color: amber
+        action: obs.mute
+        input: TwitchAlerts
+        indicator: mute
+
+      - label: Record
+        icon: "⏺️"
+        color: rose
+        action: obs.record
+        mode: toggle
+        indicator: record
+        confirm: true             # tap twice -- stops fat-finger accidents
+
+      - label: Stream
+        icon: "📡"
+        color: rose
+        action: obs.stream
+        mode: toggle
+        indicator: stream
+        confirm: true
+
+      # bus.publish drops an event straight onto the existing RabbitMQ
+      # fanout exchanges. Anything already listening picks it up with no
+      # changes on its side -- the cheap way to wire the deck into
+      # DabiReborn, the overlay, or anything you build later.
+      - label: Dabi Says
+        icon: "🦄"
+        color: violet
+        action: bus.publish
+        exchange: dabi_events
+        type: dabi.tts.ready
+        payload:
+          text: "Hey chat, don't forget to hydrate."
+
+      - label: Billboard
+        icon: "📋"
+        color: emerald
+        action: bus.publish
+        exchange: twitch_events
+        type: channel.command.send_chat
+        payload:
+          text: "!other **Back in a moment.**"

@@ -1,0 +1,36 @@
+/* Transparent by default -- this source contributes audio, not pixels. */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+.hidden { display: none !important; }
+
+#debug {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  min-width: 280px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: rgba(10, 12, 18, 0.85);
+  color: #e6e8ef;
+  font: 13px/1.5 ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+#debug .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+#debug .key {
+  color: #8b93a7;
+}
+
+#debug .ok    { color: #4ade80; }
+#debug .warn  { color: #fbbf24; }
+#debug .error { color: #f87171; }

@@ -28,10 +28,11 @@ from fastapi import (
     Header,
     HTTPException,
     Query,
+    Request,
     WebSocket,
     WebSocketDisconnect,
 )
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -452,6 +453,18 @@ async def ws_music(ws: WebSocket, token: Optional[str] = Query(default=None)):
 
 
 # -- static (must be mounted last: "/" swallows everything) ------------------
+
+@app.get("/player", include_in_schema=False)
+async def player_no_slash(request: Request):
+    """Forgive the missing trailing slash.
+
+    Without this, an OBS browser source pointed at /player?token=... just
+    404s: a blank source, no audio, and no error anywhere the streamer would
+    look. Preserves the query string so the token survives the redirect.
+    """
+    query = request.url.query
+    return RedirectResponse(url="/player/" + (f"?{query}" if query else ""))
+
 
 Path(MUSIC_LIBRARY).mkdir(parents=True, exist_ok=True)
 app.mount("/audio", StaticFiles(directory=MUSIC_LIBRARY), name="audio")

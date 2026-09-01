@@ -26,6 +26,13 @@ services:
       - ./player:/app/player:ro
     ports:
       - "${DECK_HTTP_PORT:-8095}:${DECK_HTTP_PORT:-8095}"
+    # Adding the name to the *Pi's* /etc/hosts does nothing -- Docker gives
+    # the container its own hosts file and never inherits the host's. This is
+    # the container-side equivalent, if you'd rather read a name than an IP
+    # in .env. It pins the same address either way, so it buys readability,
+    # not resilience.
+    # extra_hosts:
+    #   - "cachyowo:100.69.244.83"
     restart: unless-stopped
     networks:
       # Joins the existing broadcaster network so `rabbitmq` resolves by name.

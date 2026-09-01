@@ -51,7 +51,7 @@ cp .env.example .env
 python3 -c "import secrets; print(secrets.token_urlsafe(24))"   # DECK_TOKEN
 ```
 
-Fill in `DECK_TOKEN` and `OBS_PASSWORD`. Leave `OBS_HOST=cachyowo` unless MagicDNS misbehaves inside Docker, in which case use `100.69.244.83`.
+Fill in `DECK_TOKEN` and `OBS_PASSWORD`. **Leave `OBS_HOST` as the Tailscale IP** — see the DNS gotcha below before changing it to a hostname.
 
 ### 3. Placeholder music, so you can test before you have a library
 
@@ -172,6 +172,12 @@ OBS and RabbitMQ being unreachable is fine — they retry in the background and 
 
   ```bash
   curl -s -H "X-Deck-Token: $DECK_TOKEN" http://dabi:8095/api/state | jq '.state.obs.muted'
+  ```
+
+- **`OBS_HOST` must be an IP, not a MagicDNS name.** The Pi's host resolves `cachyowo` fine; the container does not, because Docker's embedded resolver (`127.0.0.11`) forwards to the host's nameservers rather than to the tailnet. The symptom is `OBS unreachable ... [Errno -2] Name or service not known` on a loop, with a correct password and OBS running — it reads like a firewall problem and isn't. The service now logs an explicit hint when it sees this. Confirm it from inside the container:
+
+  ```bash
+  docker exec pd-streamdeck python3 -c "import socket; print(socket.gethostbyname('cachyowo'))"
   ```
 
 - **The scene JSON on disk goes stale.** OBS writes it on exit or collection switch, so a file read mid-session can name scenes that no longer match. The live collection is `Pd` (profile `Cyra`). Trust `GET /api/obs/scenes`, not the file — this is why buttons validate at connect time.

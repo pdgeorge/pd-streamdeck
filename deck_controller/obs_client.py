@@ -10,6 +10,7 @@ the OBS window directly.
 
 import asyncio
 import logging
+import socket
 from typing import Awaitable, Callable, Optional
 
 import simpleobsws
@@ -38,6 +39,7 @@ class ObsClient:
         self._ws: Optional[simpleobsws.WebSocketClient] = None
         self._task: Optional[asyncio.Task] = None
         self._stopping = False
+        self._dns_hint_logged = False
 
         # Mirrored OBS state. Read by the API, written only from events
         # and the post-connect refresh.
@@ -83,6 +85,7 @@ class ObsClient:
                     "OBS unreachable at %s (%s); retrying in %ss",
                     self._url, exc, backoff,
                 )
+                self._explain_if_dns(exc)
             finally:
                 if not self._stopping:
                     await self._mark_disconnected()
@@ -91,6 +94,31 @@ class ObsClient:
                 break
             await asyncio.sleep(backoff)
             backoff = min(backoff * 2, RECONNECT_MAX)
+
+    def _explain_if_dns(self, exc: Exception) -> None:
+        """Say the word 'DNS' out loud, once.
+
+        Running in Docker, OBS_HOST is typically a Tailscale MagicDNS name.
+        The host resolves it; the container does not, because Docker's
+        embedded resolver forwards to the host's nameservers rather than to
+        the tailnet. The raw error ("Name or service not known") is accurate
+        but reads like a network problem, which sends people to check
+        firewalls and passwords instead of the one thing that's wrong.
+        """
+        if self._dns_hint_logged:
+            return
+        is_dns = isinstance(exc, socket.gaierror) or "Name or service not known" in str(exc)
+        if not is_dns:
+            return
+        self._dns_hint_logged = True
+        host = self._url.split("//", 1)[-1].rsplit(":", 1)[0]
+        LOGGER.warning(
+            "Could not resolve the hostname %r. This is name resolution, not "
+            "connectivity or the password. Inside Docker, MagicDNS names "
+            "usually fail even when the host resolves them fine -- set "
+            "OBS_HOST to the Tailscale IP instead and restart.",
+            host,
+        )
 
     async def _connect_once(self) -> None:
         await self._teardown()

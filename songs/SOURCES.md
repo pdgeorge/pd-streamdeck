@@ -1,6 +1,6 @@
 # Where the music comes from
 
-**The library is populated.** 124 tracks are already in place: 38 chill, 58 hype, 13 sad, 15 tension. All two-pass loudness-normalised to -16 LUFS and re-encoded at 192 kbps, so a random pick never jumps in volume between a chiptune track and an orchestra. See [`ATTRIBUTION.md`](ATTRIBUTION.md) for the credit line to paste into a Twitch panel.
+**The library is populated.** 132 tracks are already in place: 38 chill, 58 hype, 21 sad, 15 tension. All two-pass loudness-normalised to -16 LUFS and re-encoded at 192 kbps, so a random pick never jumps in volume between a chiptune track and an orchestra. See [`ATTRIBUTION.md`](ATTRIBUTION.md) for the credit line to paste into a Twitch panel.
 
 What's in there now:
 
@@ -8,7 +8,7 @@ What's in there now:
 |---|---|---|
 | Kevin MacLeod (Incompetech) | CC BY 4.0 | 39 |
 | Ozzed — 3 chiptune albums | Creative Commons | 46 |
-| Musopen classical | Public Domain | 22 |
+| Musopen classical | Public Domain | 30 |
 | Eric Skiff — *Resistor Anthems* | CC BY 4.0 | 17 |
 
 **Not downloaded: Scott Buckley.** His site returns HTTP 406 from Mod_Security to any scripted request — a deliberate anti-scraping measure I didn't try to work around. He's the single best source on this page for `sad` and `hype`, so it's worth ten minutes of clicking: grab `Penumbra`, `Incredulity`, `Wildflowers`, `In This Moment` for sad, and `Song Of The Forge`, `Aphelion`, `Born Of The Sky` for hype, from <https://www.scottbuckley.com.au/library/>. Drop them in, then `POST /api/music/rescan`.
@@ -127,6 +127,28 @@ Unhurried, melodic, slightly wistful, loops forever without demanding attention.
 - Schubert — *Ave Maria*
 
 ---
+
+---
+
+## Tracks that can't go in here, and what replaced them
+
+Some specific game tracks are worth wanting and impossible to use. Two examples, with the free substitutes chosen to match them:
+
+**"Dejected Groose"** — *The Legend of Zelda: Skyward Sword*, Nintendo (Wakai / Fujii / Yokota / Hama / Kondo). A gentle bittersweet lament: a comic character given real pathos, carried on strings and brass. Nintendo has no free release and is the worst possible rights-holder to test. Closest free matches now in `sad/`:
+
+- `brahms_sym3-poco-allegretto` — the canonical bittersweet cello melody; warm rather than devastating, which is the hard part to match
+- `borodin_quartet2-nocturne` — tender and lyrical, same "sad but fond" register
+- `grieg_aases-death` — already there, and closer than it first looks
+
+**"EV27-2 Truth"** — *Bayonetta*, SEGA / PlatinumGames. A late-game revelation cue: solemn, weighted, building. Closest free matches now in `sad/`:
+
+- `brahms_sym1-andante-sostenuto` — solemn and building, the same slow reveal
+- `mendelssohn_scottish-adagio` — brooding
+- `suk_meditation` — already there; a solemn chorale, arguably the closest single match in the library
+
+A note on sourcing: unauthorised OST rips are all over archive.org, YouTube and elsewhere. Being freely *available* is not being freely *licensed*. The Musopen material in this library came from archive.org because that specific item carries a Public Domain Mark; a Bayonetta OST upload sitting next to it carries nothing.
+
+Also worth separating: **owning** a soundtrack and being allowed to **broadcast** it are different things. A legally bought copy still trips Audible Magic and still costs you the VOD block.
 
 ## Practical notes
 

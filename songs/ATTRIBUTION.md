@@ -1,60 +1,50 @@
 # Attribution
 
-The library is CC-BY except the classical, which is public domain and needs no credit. CC-BY asks that credit be placed where a reasonable person could find it — for a live stream, a **Twitch panel** is the accepted way, and it covers the whole library at once rather than per track.
+**Nothing in this library carries a license obligation.** The previous library was CC-BY, which required a credit line placed where a reasonable person could find it. The current one is commercial game soundtracks you own plus one public-domain Grieg recording — neither of which asks for anything. Purchased music has no attribution clause to satisfy, and Musopen releases its recordings into the public domain.
 
-## Paste this into a Twitch panel
+So this file is no longer a compliance document. It's the credit list, kept because viewers ask what's playing and because the composers deserve the name.
+
+## Composers in this library
+
+| Composer | Work | Where |
+|---|---|---|
+| Christopher Larkin | Hollow Knight, Hollow Knight: Silksong | chill, hype, tension, sad |
+| Darren Korb | Hades, Bastion, Transistor | hype, sad |
+| toby fox | UNDERTALE | chill, tension, sad |
+| Tomáš Dvořák (Floex) | Machinarium | chill, tension |
+| Stuart Chatwood | Darkest Dungeon | tension |
+| Kan Gao | To The Moon, Finding Paradise | sad |
+| Scott Lloyd Shelly (Resonance Array) | Terraria | chill |
+| Lena Raine | Celeste | chill |
+| Curtis Schweitzer | Starbound | chill |
+| Disasterpeace | FEZ | chill |
+| Lifeformed | Dustforce (*Fastfall*) | chill |
+| Deniz Akbulut | CrossCode | chill |
+| Daisuke Ishiwatari | Guilty Gear Xrd | hype |
+| SNK Sound Team | The King of Fighters XIII | hype |
+| Danny Baranowsky, remixed by FamilyJules7x | Crypt of the NecroDancer | hype |
+| Chris Christodoulou | Risk of Rain Returns | hype |
+| Kristofer Maddigan | Cuphead | hype |
+| doseone | Enter the Gungeon | hype |
+| Rom Di Prisco | Guacamelee! | hype |
+| Francisco Cerda | Jamestown | hype |
+| Mikko Tarmia | Amnesia: The Dark Descent | tension |
+| Ben Prunty | FTL: Advanced Edition | tension |
+| Eirik Suhrke | Spelunky 2 | tension |
+| River Boy | Cult of the Lamb | tension |
+| nK | Momodora: Reverie Under the Moonlight | sad |
+| Nintendo (Wakai / Fujii / Yokota / Hama / Kondo) | The Legend of Zelda: Skyward Sword | sad |
+| SEGA / PlatinumGames | Bayonetta | sad |
+| Edvard Grieg, recorded by the Czech National Symphony Orchestra | *In the Hall of the Mountain King* — Musopen, public domain | tension |
+
+## If you want a panel anyway
+
+A Twitch panel listing the games is a reasonable courtesy even without an obligation, and it answers the question before anyone asks it:
 
 > **Stream music**
 >
-> Kevin MacLeod — incompetech.com — CC BY 4.0
-> Eric Skiff — *Resistor Anthems* — ericskiff.com/music — CC BY 4.0
-> Ozzed — ozzed.net — Creative Commons
-> Classical recordings — Musopen — public domain
+> Soundtracks from Hollow Knight, Hades, UNDERTALE, Terraria, Celeste, Cuphead, Darkest Dungeon, To The Moon and others — see `!music` for what's playing.
 
-That's the whole obligation discharged. Below is the detail, in case you want it.
+## Doing it per-track, later
 
----
-
-## Kevin MacLeod — CC BY 4.0
-
-Source: <https://incompetech.com/music/royalty-free/music.html>
-
-Required form of credit:
-
-> Music: "Song Name" by Kevin MacLeod (incompetech.com)
-> Licensed under Creative Commons: By Attribution 4.0
-> http://creativecommons.org/licenses/by/4.0/
-
-Tracks in this library: see `songs/*/kevin-macleod_*.mp3`.
-
-## Eric Skiff — *Resistor Anthems* — CC BY 4.0
-
-Source: <http://ericskiff.com/music/>
-
-His requested form, verbatim:
-
-> Music: Eric Skiff - Song Name - Resistor Anthems - Available at http://EricSkiff.com/music
-
-Tracks in this library: see `songs/*/eric-skiff_*.mp3`.
-
-## Ozzed — Creative Commons
-
-Source: <https://ozzed.net/music/>
-
-Ozzed asks to be credited as composer, preferably with a link back to ozzed.net. Albums used: *Dunes at Night*, *8-bit Empire*, *Lesser than Three*.
-
-Tracks in this library: see `songs/*/ozzed_*.mp3`.
-
-## Classical — Musopen — Public Domain Mark 1.0
-
-Source: <https://archive.org/details/MusopenCollectionAsFlac> (the Musopen Collection)
-
-**No attribution required.** Musopen commissions professional recordings of public-domain repertoire and releases the *recordings* into the public domain, which is what makes them safe — a public-domain composition performed on a modern commercial recording is not.
-
-Composers used: Bach, Beethoven, Borodin, Brahms, Dvořák, Grieg, Haydn, Mendelssohn, Mozart, Rimsky-Korsakov, Schubert, Smetana, Suk, Tchaikovsky.
-
----
-
-## Doing it automatically, later
-
-The deck already knows the currently playing track, and `bus.publish` can post to `channel.command.send_chat`. So a `!music` chat command that answers with what's playing *right now* is a small feature rather than a project. Worth doing if you ever want per-track credit rather than a panel — but the panel alone satisfies CC-BY.
+The deck knows the currently playing track, and `bus.publish` can post to `channel.command.send_chat`. A `!music` command that answers with what's playing *right now* is a small feature rather than a project — and it's more useful here than it was under the old library, because "what's this track?" is a question people actually ask about game music. Filenames are already `game_track.mp3` for exactly this reason.

@@ -99,7 +99,7 @@ rsync -av --progress songs/ dabi:~/projects/pd-streamdeck/songs/
 
 `songs/` is a bind mount, so this works before or after the container starts. If after, `POST /api/music/rescan` rather than rebuilding.
 
-Starting from nothing instead? [`songs/SOURCES.md`](songs/SOURCES.md) is the researched list of stream-safe sources with specific track picks per mood, and [`tools/seed_placeholder_songs.py`](tools/seed_placeholder_songs.py) generates a distinct tone per mood so you can test the whole chain before you have real audio.
+Starting from nothing instead? [`songs/SOURCES.md`](songs/SOURCES.md) lists what's in the library and where it came from, with a stream-safe appendix if you want a library that carries no VOD risk at all, and [`tools/seed_placeholder_songs.py`](tools/seed_placeholder_songs.py) generates a distinct tone per mood so you can test the whole chain before you have real audio.
 
 ### 4. Start it
 
@@ -112,7 +112,7 @@ Healthy startup looks like:
 
 ```
 Loaded /config/deck.yaml: 3 page(s), 24 button(s)
-Music library: {'chill': 38, 'hype': 58, 'sad': 23, 'tension': 15}
+Music library: {'chill': 10, 'hype': 10, 'sad': 10, 'tension': 10}
 Deck up on :8095 -- OBS target 100.69.244.83:4455, auth on
 Bus ready; exchanges: twitch_events, dabi_events
 Connected to OBS at ws://100.69.244.83:4455
@@ -260,12 +260,12 @@ The service logs an explicit one-shot hint when it detects this.
 - **`Mic/Aux` and `Desktop Audio` are dead Windows leftovers** in the OBS config. They're `wasapi_*` kinds, which Linux OBS can't drive — pressing one returns *"The specified input does not support audio."* The live pulse inputs are `Microphone`, `Discord`, `Default` (desktop audio) and `VR Microphone`. `GET /api/state` lists every audio-capable input under `obs.muted`.
 - **Some scenes carry no microphone.** Audio sources are per-scene in OBS, so switching scene changes what's audible. As audited: `Cam` and `RandomBS` have **no audio sources at all** — switching to either kills mic, desktop and Discord simultaneously; `Backpack RTSP`, `Parenting` and `FullscreenVid` carry no mic. The Scenes page deliberately covers only the eight stream-ready scenes; `Cam` and `RandomBS` are left off on purpose. Re-audit after editing scenes with `GET /api/state`.
 - **The scene JSON on disk goes stale.** OBS writes it on exit or collection switch, so reading it mid-session can name scenes that no longer match. The live collection is `Pd` (profile `Cyra`). Trust `GET /api/obs/scenes`, not the file — this is why buttons validate at connect time.
-- **Music licensing.** Twitch mutes VODs and issues strikes for copyrighted audio. A separate audio track protects VODs but not the live stream. See [`songs/SOURCES.md`](songs/SOURCES.md) for stream-safe sources and [`songs/ATTRIBUTION.md`](songs/ATTRIBUTION.md) for the CC-BY credits to paste into a Twitch panel.
+- **Music licensing.** The library is commercial game soundtracks, so the separate OBS audio track is doing real work: it keeps music out of the VOD, which is what Audible Magic scans. It does not cover the live stream. See [`songs/SOURCES.md`](songs/SOURCES.md) for the reasoning and a stream-safe alternative.
 - **The Pi is on WiFi** (`wlan0`, 192.168.20.14). Fine for audio (~40 KB/s), but it's a reason to keep the tablet on the same LAN.
 - **Port 8095** is this service. Also in use on the Pi: 8000, 8001, 8080, 8090, 8787, 3306, 5672, 15672, 11434.
 
 ## Related
 
 - [`songs/SOURCES.md`](songs/SOURCES.md) — where the music came from, per-mood picks, and the copyright traps
-- [`songs/ATTRIBUTION.md`](songs/ATTRIBUTION.md) — ready-to-paste Twitch panel credits
+- [`songs/ATTRIBUTION.md`](songs/ATTRIBUTION.md) — composer credits for everything in the library
 - `../dabiverse/ARCHITECTURE.md` — the wider stack this plugs into

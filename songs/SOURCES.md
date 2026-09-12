@@ -1,56 +1,116 @@
 # Where the music comes from
 
-**The library is populated.** 132 tracks are already in place: 38 chill, 58 hype, 21 sad, 15 tension. All two-pass loudness-normalised to -16 LUFS and re-encoded at 192 kbps, so a random pick never jumps in volume between a chiptune track and an orchestra. See [`ATTRIBUTION.md`](ATTRIBUTION.md) for the credit line to paste into a Twitch panel.
+**The library is 40 tracks pulled from game soundtracks you own** — ten each in `chill`, `hype`, `tension` and `sad`. Every file is two-pass loudness-normalised to -16 LUFS (-1.5 dBTP, LRA 11) and re-encoded at 192 kbps, so a random pick never jumps in volume between a Cuphead big-band number and an Amnesia ambient cue.
 
-What's in there now:
+Source: `/media/Bucket_Drive/Media/Game Soundtracks/`, plus two tracks that were already in `sad/` and one public-domain Grieg recording in `tension/`.
 
-| Source | License | Tracks |
+**This is why `songs/` is gitignored and stays that way.** These are purchased copies, not redistributable. The library moves between your own machines with `rsync` and never through the repo; a fresh clone gets four empty mood folders and every mood button returns `400 — Mood 'sad' has no audio files` until you sync. See the README for the command.
+
+Filenames follow `game_track.mp3` because the deck displays the filename as the now-playing track — so what's on the tablet, and in any future `!music` response, reads as something a person recognises.
+
+## `songs/chill/` — unhurried, melodic, loops without demanding attention
+
+| Track | Game | Composer |
 |---|---|---|
-| Kevin MacLeod (Incompetech) | CC BY 4.0 | 39 |
-| Ozzed — 3 chiptune albums | Creative Commons | 46 |
-| Musopen classical | Public Domain | 30 |
-| Eric Skiff — *Resistor Anthems* | CC BY 4.0 | 17 |
+| Overworld Day | Terraria | Scott Lloyd Shelly |
+| Overworld Night | Terraria | Scott Lloyd Shelly |
+| Quiet and Falling | Celeste | Lena Raine |
+| Dirtmouth | Hollow Knight | Christopher Larkin |
+| Horsehead Nebula | Starbound | Curtis Schweitzer |
+| Adventure | FEZ | Disasterpeace |
+| The Glasshouse With Butterfly | Machinarium | Tomáš Dvořák |
+| Waterfall | UNDERTALE | toby fox |
+| Cider Time | Dustforce | Lifeformed |
+| Autumn's Rise | CrossCode | Deniz Akbulut |
 
-**Not downloaded: Scott Buckley.** His site returns HTTP 406 from Mod_Security to any scripted request — a deliberate anti-scraping measure I didn't try to work around. He's the single best source on this page for `sad` and `hype`, so it's worth ten minutes of clicking: grab `Penumbra`, `Incredulity`, `Wildflowers`, `In This Moment` for sad, and `Song Of The Forge`, `Aphelion`, `Born Of The Sky` for hype, from <https://www.scottbuckley.com.au/library/>. Drop them in, then `POST /api/music/rescan`.
+Two Terraria tracks because that was the reference point for this mood. All instrumental, all written to loop under gameplay, none of them pull focus from a voice.
 
-Everything below is the research this selection came from.
+## `songs/hype/` — fighting-game energy
+
+| Track | Game | Composer |
+|---|---|---|
+| Storyteller | Guilty Gear Xrd | Daisuke Ishiwatari |
+| Scourge of the Furies | Hades | Darren Korb |
+| Esaka Continues | The King of Fighters XIII | SNK Sound Team |
+| Infernal Descent (1-1 Remix) | Crypt of the NecroDancer | FamilyJules7x, after Danny Baranowsky |
+| Coalescence | Risk of Rain Returns | Chris Christodoulou |
+| Floral Fury | Cuphead | Kristofer Maddigan |
+| BULLET HELL YES | Enter the Gungeon | doseone |
+| Final Boss | Guacamelee! | Rom Di Prisco |
+| Lace | Hollow Knight: Silksong | Christopher Larkin |
+| Turning the Tide | Jamestown | Francisco Cerda |
+
+*Storyteller* set the register — vocal guitar rock — and KOF XIII and the FamilyJules metal remix sit next to it deliberately. Cuphead and Guacamelee are the outliers on texture, so the mood isn't ten minutes of the same guitar tone. Two tracks here have vocals, which compete with a voice more than the rest of the library does.
+
+## `songs/tension/` — something is about to happen
+
+| Track | Game | Composer |
+|---|---|---|
+| Explore the Ruins | Darkest Dungeon | Stuart Chatwood |
+| Terror and Madness | Darkest Dungeon | Stuart Chatwood |
+| Theme For Unknown | Amnesia: The Dark Descent | Mikko Tarmia |
+| Lost Ship (Battle) | FTL: Advanced Edition | Ben Prunty |
+| Soul Sanctum | Hollow Knight | Christopher Larkin |
+| Premonition | UNDERTALE | toby fox |
+| Hidden dangers | Spelunky 2 | Eirik Suhrke |
+| The Night | Cult of the Lamb | River Boy |
+| The Black Brotherhood Theme | Machinarium | Tomáš Dvořák |
+| In the Hall of the Mountain King | — | Grieg, Musopen recording (public domain) |
+
+Two Darkest Dungeon tracks because it's the best-in-class soundtrack for this mood and the two cover different registers: slow creeping dread, and active panic. The Grieg is the one survivor of the previous library — public domain, no attribution needed, and the accelerating build is almost purpose-made for this button.
+
+## `songs/sad/` — the emotional moment
+
+| Track | Game | Composer |
+|---|---|---|
+| Dejected Groose | The Legend of Zelda: Skyward Sword | Nintendo (Wakai / Fujii / Yokota / Hama / Kondo) |
+| EV27-2 Truth | Bayonetta | SEGA / PlatinumGames |
+| For River — Piano (Johnny's Version) | To The Moon | Kan Gao |
+| Time is a Place (Piano Vers.) | Finding Paradise | Kan Gao |
+| Reflection | Hollow Knight | Christopher Larkin |
+| Memory | UNDERTALE | toby fox |
+| Mother, I'm Here (Zulf's Theme) | Bastion | Darren Korb |
+| Paper Boats | Transistor | Darren Korb |
+| Reverie | Momodora: Reverie Under the Moonlight | nK |
+| Lament of Orpheus | Hades | Darren Korb |
+
+Built around the two tracks that were already here: solemn, weighted and melodic rather than bleak and ambient. *Paper Boats* and *Lament of Orpheus* have vocals — fine for a button you press for a beat, worth swapping if you leave Sad running under talking.
+
+## The VOD question
+
+Everything here except the Grieg is commercial music. Owning the soundtrack and being licensed to broadcast it are different things, and [Twitch's Audible Magic scanning mutes VODs in 30-minute blocks](https://www.streamscheme.com/can-you-play-video-game-music-on-twitch/) on a match.
+
+The mitigation is already in the setup: the README has the music browser source on **its own OBS audio track**, excluded from VOD and highlights. Music that isn't in the VOD can't get the VOD muted — live viewers hear it, the recording doesn't contain it. That handles the muting risk; it doesn't cover a live DMCA claim, which is a separate and much rarer thing. If you ever want the exposure gone entirely rather than reduced, the appendix below is the stream-safe route.
+
+## Adding or replacing a track
+
+Normalise before it goes in, or it will be louder or quieter than everything else. Two passes — measure, then apply the measurement:
+
+```bash
+# pass 1: measure
+ffmpeg -i in.mp3 -af loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json -f null -
+# pass 2: apply the measured_* values it printed
+ffmpeg -i in.mp3 -af loudnorm=I=-16:TP=-1.5:LRA=11:measured_I=…:measured_TP=…:measured_LRA=…:measured_thresh=…:offset=…:linear=true \
+  -ar 44100 -c:a libmp3lame -b:a 192k songs/<mood>/game_track.mp3
+```
+
+Then `POST /api/music/rescan`, or restart the container.
+
+**Ten per mood is the number to hold.** The no-repeat window is 3 and caps itself at one less than the folder size, so ten gives genuinely varied rotation without the folder turning into something you never curate. Adding an eleventh is a good moment to ask which one it replaces.
 
 ---
 
-Everything listed here is either **CC0/public-domain** or **CC-BY** (free, credit required), or is explicitly licensed for streaming. Nothing here should ever mute a VOD.
+# Appendix: the stream-safe route
 
----
+This was the previous library — 132 CC-BY and public-domain tracks, all free, none of them ever a VOD risk. It's here because the research is still valid if you ever want to switch back, or want a second set for VOD-safe segments.
 
-## First, the bad news about Terraria and Skyrim
+## The classical trap
 
-Game soundtracks are **not** copyright-free. Terraria's music is Scott Lloyd Shelly's (Resonance Array) and is sold as a paid album; Skyrim's is Jeremy Soule's, owned by Bethesda/ZeniMax; fighting-game music belongs to Capcom, SNK, Arc System Works and friends.
+**A public-domain composition is not a public-domain recording.** Beethoven died in 1827 and his *score* is free to anyone. A 2015 Berlin Philharmonic *performance* of it is a brand-new copyrighted sound recording, and using it gets you flagged exactly like using a pop song. [Musopen](https://musopen.org/) exists precisely for this — a non-profit that pays professional orchestras to record the repertoire and releases those *recordings* into the public domain. That's the safe classical source, and it's where the Grieg in `tension/` came from.
 
-There's a meaningful distinction worth knowing:
+Three pieces that trip people up because they *sound* old but aren't: "Albinoni's" Adagio in G minor (actually Remo Giazotto, d. 1998), Barber's Adagio for Strings (d. 1981), and Orff's *O Fortuna* (d. 1982).
 
-- **Game audio while you're actually playing that game** is broadly tolerated — it's incidental to the gameplay you're licensed to broadcast.
-- **Ripping the OST to use as standalone background music** is not covered by anything, and it's exactly what a deck button would be doing.
-
-Either way, [Twitch's Audible Magic scanning mutes VODs in 30-minute blocks](https://www.streamscheme.com/can-you-play-video-game-music-on-twitch/) when it detects a match, so even the tolerated case costs you VODs. The good news: the *vibes* you named — Terraria's unhurried melodic chiptune, Skyrim's orchestral swell, fighting-game intensity — are all extremely well covered by composers who give their work away. That's what's below.
-
-## Second, the classical trap
-
-You said you're up for classical, so this is the single most important thing on this page:
-
-**A public-domain composition is not a public-domain recording.** Beethoven died in 1827 and his *score* is free to anyone. A 2015 Berlin Philharmonic *performance* of it is a brand-new copyrighted sound recording, and using it will get you flagged exactly like using a pop song.
-
-You need recordings that are themselves PD or CC0. [Musopen](https://musopen.org/) exists precisely for this — it's a non-profit that pays professional orchestras to record the classical repertoire and releases those recordings into the public domain (CC0). That's the safe classical source.
-
-Three specific pieces that trip people up because they *sound* old but aren't:
-
-| Piece | Why it's not safe |
-|---|---|
-| "Albinoni's" Adagio in G minor | Actually written by Remo Giazotto (d. 1998). Not PD. |
-| Barber — Adagio for Strings | Barber d. 1981. Not PD. |
-| Orff — *O Fortuna* (Carmina Burana) | Orff d. 1982. Not PD. |
-
----
-
-## The core sources
+## The sources
 
 | Source | License | Attribution | Best for |
 |---|---|---|---|
@@ -62,116 +122,5 @@ Three specific pieces that trip people up because they *sound* old but aren't:
 | [Chris Zabriskie](https://freemusicarchive.org/music/Chris_Zabriskie/) | CC-BY 4.0 | Yes | sad, chill — ambient/piano |
 | [Musopen](https://musopen.org/) | CC0 / PD | No | classical, all moods |
 | [StreamBeats](https://www.streambeats.com/) | Stream-licensed | **No** | everything; ~1000 tracks, zero obligations |
-| [Free Music Archive](https://freemusicarchive.org/) | Varies — check each | Varies | aggregator |
 
-If you want the absolute lowest-friction start: **StreamBeats requires no attribution at all** and has genre-sorted albums you can bulk-download. Grab that first, then cherry-pick the CC-BY composers below for the tracks that actually have character.
-
----
-
-## `songs/chill/` — the Terraria feeling
-
-Unhurried, melodic, slightly wistful, loops forever without demanding attention.
-
-**Chiptune (closest to the Terraria texture)**
-- **Ozzed** — the albums *Dunes at Night*, *Lesser than Three*, *8-bit Empire*. Whole albums download as zips or torrents.
-- **Eric Skiff** — `Come and Find Me`, `We're all under the stars`, `Behind the waterfall lies the beginning`, `Prologue`
-
-**Ambient / piano**
-- **Chris Zabriskie** — the *Cylinder* series (`Cylinder Five`, `Cylinder Seven`, `Cylinder Nine`), `Prelude No. 20`
-- **Scott Buckley** — `Home Was You`, `Echoes Of Home` (his own note calls it Ghibli-ish), `Amberlight`
-
-**Classical (Musopen)**
-- Satie — *Gymnopédie No. 1*, *Gnossiennes*
-- Debussy — *Clair de Lune*, *Rêverie*
-- Chopin — the slower Nocturnes
-
-## `songs/hype/` — Skyrim battle and fighting-game energy
-
-**Orchestral**
-- **Scott Buckley** — `Song Of The Forge` (an epic dwarven war march — the closest you'll legally get to the Skyrim register), `Aphelion`, `Born Of The Sky`
-- **Alexander Nakarada** — `Mega Boss Fight`, `Superepic`, `Battle Loop`
-
-**Chiptune / fighting-game energy**
-- **Eric Skiff** — `A Night Of Dizzy Spells`, `Chibi Ninja`, `Jumpshot`, `We're the Resistors`, `HHavok-main`
-
-**Classical (Musopen)**
-- Wagner — *Ride of the Valkyries*
-- Holst — *Mars, the Bringer of War* (also excellent for tension)
-- Beethoven — Symphony No. 5, first movement
-- Tchaikovsky — *1812 Overture*, finale
-
-**Kevin MacLeod** — filter his catalogue by the `Epic`, `Action` and `Driving` tags.
-
-## `songs/tension/` — something is about to happen
-
-- **Scott Buckley** — `Eyes In The Void` (dark chaotic gothic orchestral), `Unraveling`
-- **Kevin MacLeod** — the `Suspenseful`, `Unnerving` and `Eerie` tags; there's a well-known collection of ~128 scary cinematic cues
-- **Alexander Nakarada** — his darker orchestral material
-
-**Classical (Musopen)**
-- Mussorgsky — *Night on Bald Mountain*
-- Grieg — *In the Hall of the Mountain King* (the accelerating build is almost purpose-made for this)
-- Bach — *Toccata and Fugue in D minor*
-- Holst — *Mars*
-
-## `songs/sad/` — the emotional moment
-
-- **Scott Buckley** — `Penumbra`, `Incredulity`, `Wildflowers`, `In This Moment`, `Unraveling`. This is where he's strongest; his own tags call them bittersweet and introspective.
-- **Chris Zabriskie** — `There's Probably No Time`, `Undercover Vampire Policeman`, and most of the ambient piano catalogue
-- **Kevin MacLeod** — the `Somber` tag; there's a collection of ~78 sad cinematic cues
-
-**Classical (Musopen)**
-- Chopin — *Nocturne Op. 9 No. 2*
-- Beethoven — *Moonlight Sonata*, first movement
-- Satie — *Gymnopédie No. 1* (works in both chill and sad)
-- Schubert — *Ave Maria*
-
----
-
----
-
-## Tracks that can't go in here, and what replaced them
-
-Some specific game tracks are worth wanting and impossible to use. Two examples, with the free substitutes chosen to match them:
-
-**"Dejected Groose"** — *The Legend of Zelda: Skyward Sword*, Nintendo (Wakai / Fujii / Yokota / Hama / Kondo). A gentle bittersweet lament: a comic character given real pathos, carried on strings and brass. Nintendo has no free release and is the worst possible rights-holder to test. Closest free matches now in `sad/`:
-
-- `brahms_sym3-poco-allegretto` — the canonical bittersweet cello melody; warm rather than devastating, which is the hard part to match
-- `borodin_quartet2-nocturne` — tender and lyrical, same "sad but fond" register
-- `grieg_aases-death` — already there, and closer than it first looks
-
-**"EV27-2 Truth"** — *Bayonetta*, SEGA / PlatinumGames. A late-game revelation cue: solemn, weighted, building. Closest free matches now in `sad/`:
-
-- `brahms_sym1-andante-sostenuto` — solemn and building, the same slow reveal
-- `mendelssohn_scottish-adagio` — brooding
-- `suk_meditation` — already there; a solemn chorale, arguably the closest single match in the library
-
-A note on sourcing: unauthorised OST rips are all over archive.org, YouTube and elsewhere. Being freely *available* is not being freely *licensed*. The Musopen material in this library came from archive.org because that specific item carries a Public Domain Mark; a Bayonetta OST upload sitting next to it carries nothing.
-
-Also worth separating: **owning** a soundtrack and being allowed to **broadcast** it are different things. A legally bought copy still trips Audible Magic and still costs you the VOD block.
-
-## Practical notes
-
-**Aim for 8–15 tracks per mood.** The no-repeat window is 3, and it caps itself at one less than the folder size — so a folder of 4 gives you genuinely varied rotation, and a folder of 2 just alternates.
-
-**Normalise the loudness before you drop files in.** Different sources master at wildly different levels, and with a random picker that means `Hype` blowing the doors off right after `Sad` whispered. One pass with ffmpeg fixes it:
-
-```bash
-# -16 LUFS is a reasonable target for background music under voice
-for f in songs/*/*.mp3; do
-  ffmpeg -i "$f" -af loudnorm=I=-16:TP=-1.5:LRA=11 -c:a libmp3lame -q:a 2 "${f%.mp3}.norm.mp3" \
-    && mv "${f%.mp3}.norm.mp3" "$f"
-done
-```
-
-**Keep the artist in the filename** — `scott-buckley_penumbra.mp3`. The deck shows the filename as the now-playing track, so attribution becomes something you can read off the tablet instead of looking up.
-
-**Then rescan:** `POST /api/music/rescan`, or restart the container.
-
-## Attribution, practically
-
-CC-BY needs credit "such that a person can reasonably find the source". For a live stream that normally means a **Twitch panel** listing the composers you use, which covers your whole library in one place and needs no per-track work.
-
-Worth knowing for later: `overlay_controller` already has the `#a <trigger> <response>` custom-command system, so a `!music` panel-equivalent in chat is a two-minute job. And because the deck knows the current track and can `bus.publish` to `channel.command.send_chat`, a `!music` that answers with what's *actually playing right now* is a small feature away.
-
-StreamBeats and Musopen need no attribution at all, if you'd rather not think about it.
+Lowest friction of the lot: StreamBeats needs no attribution at all and downloads as genre-sorted albums. Scott Buckley is the one worth manual effort — his site returns HTTP 406 to scripted requests, so it's ten minutes of clicking, and he's the best free match for `sad` and `hype` on this page.

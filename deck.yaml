@@ -127,6 +127,21 @@ pages:
         action: music.volume
         delta: 0.1
 
+      # Rates whatever is playing right now. +1 doubles a track's odds of
+      # being drawn again, -1 halves them; the scale stops at +/-3 so a mood
+      # narrows towards your favourites without collapsing onto one song.
+      - label: "+1"
+        icon: "👍"
+        color: emerald
+        action: music.rate
+        delta: 1
+
+      - label: "-1"
+        icon: "👎"
+        color: slate
+        action: music.rate
+        delta: -1
+
   - name: Live
     columns: 4
     buttons:

@@ -13,6 +13,7 @@ COPY player/ /app/player/
 # layout and the song folders can change without rebuilding the image.
 ENV DECK_CONFIG=/config/deck.yaml \
     MUSIC_LIBRARY=/songs \
+    DECK_STATE_DIR=/data \
     DECK_HTTP_PORT=8095
 
 EXPOSE 8095

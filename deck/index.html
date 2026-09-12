@@ -31,6 +31,9 @@
     <span class="np-icon" id="np-icon">♪</span>
     <span id="np-track">No music</span>
     <span id="np-mood" class="np-mood"></span>
+    <!-- Only shown once a track has been rated, so an unrated library
+         stays visually quiet. -->
+    <span id="np-score" class="np-score hidden"></span>
     <span id="np-time" class="np-time"></span>
   </div>
   <div class="np-bar"><div id="np-progress"></div></div>
@@ -39,6 +42,16 @@
     <input id="vol" type="range" min="0" max="100" step="1" value="60"
            aria-label="Music volume">
     <span id="vol-pct">60%</span>
+  </div>
+  <!--
+    Straight to one track, for when the random draw isn't what the moment
+    needs. Grouped by mood so the list reads the way the buttons do.
+  -->
+  <div class="pick-row">
+    <span class="pick-icon">🎵</span>
+    <select id="picker" aria-label="Play a specific track">
+      <option value="">Pick a track…</option>
+    </select>
   </div>
 </section>
 

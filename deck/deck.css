@@ -120,6 +120,19 @@ body {
 .np-mood  { color: var(--muted); }
 .np-time  { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
 
+/* Rating of the current track. Sits right of the mood so the whole line
+   reads as one phrase: track · mood +2. */
+.np-score {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+
+.np-score.liked    { color: var(--ok);  background: rgba(74, 222, 128, 0.14); }
+.np-score.disliked { color: var(--bad); background: rgba(248, 113, 113, 0.14); }
+
 .np-bar {
   height: 3px;
   border-radius: 2px;
@@ -198,6 +211,35 @@ body {
 
 #vol:active::-webkit-slider-thumb { background: var(--ok); }
 #vol:active::-moz-range-thumb     { background: var(--ok); }
+
+/* -- track picker ------------------------------------------------------- */
+
+.pick-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.pick-icon { font-size: 15px; }
+
+/* 44px tall for the same reason as the volume row: this gets tapped with a
+   thumb, not clicked with a mouse. The native select is deliberate -- the
+   tablet's own scrolling list beats anything rebuilt in a div. */
+#picker {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--edge);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+#picker:focus { outline: 2px solid var(--indigo); outline-offset: 1px; }
 
 /* -- button grid -------------------------------------------------------- */
 

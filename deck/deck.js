@@ -199,6 +199,7 @@
       track.classList.remove("idle");
       icon.classList.remove("idle");
       document.getElementById("np-mood").textContent = music.mood ? "· " + music.mood : "";
+      setScore(music.score);
       document.getElementById("np-time").textContent =
         formatTime(music.position) + " / " + formatTime(music.duration);
       var pct = music.duration ? (music.position / music.duration) * 100 : 0;
@@ -208,6 +209,7 @@
       track.classList.add("idle");
       icon.classList.add("idle");
       document.getElementById("np-mood").textContent = "";
+      setScore(0);
       document.getElementById("np-time").textContent = "";
       document.getElementById("np-progress").style.width = "0%";
     }
@@ -218,7 +220,77 @@
     }
   }
 
+  // -- track picker --------------------------------------------------------
+
+  /* The picker is the one part of the deck that needs to know the library's
+     contents, so it's fetched rather than described by /api/config. Reloaded
+     after a rating so the scores shown next to each track stay honest. */
+  function loadTracks() {
+    return api("/api/music/tracks").then(function (data) {
+      var picker = document.getElementById("picker");
+      picker.innerHTML = "";
+
+      var placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Pick a track…";
+      picker.appendChild(placeholder);
+
+      Object.keys(data.tracks || {}).sort().forEach(function (mood) {
+        var group = document.createElement("optgroup");
+        group.label = mood;
+        data.tracks[mood].forEach(function (track) {
+          var option = document.createElement("option");
+          // Filenames can't contain a slash, so the first one always splits
+          // mood from track cleanly on the way back.
+          option.value = mood + "/" + track.name;
+          option.textContent = track.score
+            ? track.name + "  " + formatScore(track.score)
+            : track.name;
+          group.appendChild(option);
+        });
+        picker.appendChild(group);
+      });
+    }).catch(function (err) {
+      showToast("Could not load track list: " + err.message);
+    });
+  }
+
+  function formatScore(score) {
+    return (score > 0 ? "+" : "") + score;
+  }
+
+  function initPicker() {
+    document.getElementById("picker").addEventListener("change", function () {
+      var value = this.value;
+      // Snap back to the placeholder straight away: the select shows what you
+      // are about to play, not what is playing -- the now-playing line owns
+      // that, and it updates itself when the track actually starts.
+      this.selectedIndex = 0;
+      if (!value) return;
+
+      var split = value.indexOf("/");
+      buzz(15);
+      api("/api/music/play", {
+        mood: value.slice(0, split),
+        track: value.slice(split + 1)
+      }).catch(function (err) {
+        showToast(err.message);
+        buzz([50, 80, 50]);
+      });
+    });
+  }
+
   // -- volume slider -------------------------------------------------------
+
+  function setScore(score) {
+    var el = document.getElementById("np-score");
+    if (!score) {
+      el.classList.add("hidden");
+      return;
+    }
+    el.textContent = formatScore(score);
+    el.className = "np-score " + (score > 0 ? "liked" : "disliked");
+  }
 
   function setVolumeDisplay(percent) {
     document.getElementById("vol").value = percent;
@@ -303,6 +375,8 @@
     api("/api/action", { action: button.action, params: button.params })
       .then(function () {
         el.classList.remove("pending");
+        // A rating changes the scores shown in the picker, so refresh it.
+        if (button.action === "music.rate") loadTracks();
       })
       .catch(function (err) {
         el.classList.remove("pending");
@@ -389,6 +463,8 @@
 
   token = loadToken();
   initVolume();
+  initPicker();
+  loadTracks();
   requestWakeLock();
   connect();
 })();

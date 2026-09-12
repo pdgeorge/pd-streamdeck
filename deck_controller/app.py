@@ -38,7 +38,7 @@ from pydantic import BaseModel
 
 from bus import Bus, BusError, build_bus
 from config import ConfigError, DeckConfig, load_config
-from music import MusicError, MusicLibrary, MusicPlayer
+from music import MusicError, MusicLibrary, MusicPlayer, TrackRatings
 from obs_client import ObsClient, ObsError
 
 load_dotenv()
@@ -67,6 +67,8 @@ PLAYER_DIR = _find_static("player")
 HTTP_PORT = int(os.getenv("DECK_HTTP_PORT", "8095"))
 DECK_TOKEN = os.getenv("DECK_TOKEN", "").strip()
 MUSIC_LIBRARY = os.getenv("MUSIC_LIBRARY", "/songs")
+# Somewhere writable, unlike the read-only songs/ mount. Holds track ratings.
+DECK_STATE_DIR = os.getenv("DECK_STATE_DIR", "/data")
 
 OBS_HOST = os.getenv("OBS_HOST", "localhost")
 OBS_PORT = int(os.getenv("OBS_PORT", "4455"))
@@ -84,7 +86,9 @@ class Deck:
         self.config: DeckConfig = load_config()
         self.deck_clients: set[WebSocket] = set()
         self.library = MusicLibrary(
-            MUSIC_LIBRARY, self.config.music["no_repeat_window"]
+            MUSIC_LIBRARY,
+            self.config.music["no_repeat_window"],
+            TrackRatings(str(Path(DECK_STATE_DIR) / "ratings.json")),
         )
         self.player = MusicPlayer(self.library, self.config.music, self.broadcast_state)
         self.obs = ObsClient(OBS_HOST, OBS_PORT, OBS_PASSWORD, self.on_obs_change)
@@ -293,6 +297,12 @@ async def post_record(req: OutputRequest):
 
 class PlayRequest(BaseModel):
     mood: str
+    # Naming a track plays that one; leaving it out draws from the mood.
+    track: Optional[str] = None
+
+
+class RateRequest(BaseModel):
+    delta: int
 
 
 class VolumeRequest(BaseModel):
@@ -302,7 +312,18 @@ class VolumeRequest(BaseModel):
 
 @app.post("/api/music/play", dependencies=[Depends(guard)])
 async def post_play(req: PlayRequest):
-    return {"ok": True, "result": await deck.player.play_mood(req.mood)}
+    return {"ok": True, "result": await deck.player.play_mood(req.mood, req.track)}
+
+
+@app.get("/api/music/tracks", dependencies=[Depends(guard)])
+async def get_tracks():
+    """Every track with its rating, for the tablet's track picker."""
+    return {"ok": True, "tracks": deck.library.listing()}
+
+
+@app.post("/api/music/rate", dependencies=[Depends(guard)])
+async def post_rate(req: RateRequest):
+    return {"ok": True, "result": await deck.player.rate(req.delta)}
 
 
 @app.post("/api/music/skip", dependencies=[Depends(guard)])
@@ -378,7 +399,9 @@ async def post_action(req: ActionRequest):
     elif action == "obs.record":
         result = await deck.obs.output("record", p.get("mode", "toggle"))
     elif action == "music.mood":
-        result = await deck.player.play_mood(p["mood"])
+        result = await deck.player.play_mood(p["mood"], p.get("track"))
+    elif action == "music.rate":
+        result = await deck.player.rate(p.get("delta", 1))
     elif action == "music.skip":
         result = await deck.player.skip()
     elif action == "music.stop":

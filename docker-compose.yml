@@ -10,6 +10,7 @@ services:
       DECK_HTTP_PORT: ${DECK_HTTP_PORT:-8095}
       DECK_CONFIG: /config/deck.yaml
       MUSIC_LIBRARY: /songs
+      DECK_STATE_DIR: /data
       OBS_HOST: ${OBS_HOST:-cachyowo}
       OBS_PORT: ${OBS_PORT:-4455}
       RABBITMQ_URL: ${RABBITMQ_URL:-amqp://overlay:strongpassword@rabbitmq:5672/}
@@ -20,6 +21,9 @@ services:
       # edit either without a rebuild.
       - ./deck.yaml:/config/deck.yaml:ro
       - ./songs:/songs:ro
+      # Track ratings live here, not in songs/ -- that mount is read-only on
+      # purpose and the container has to be able to write this one.
+      - ./data:/data
       # Bind-mounting the front-end matches the pattern used by
       # overlay_controller: tweak the UI, reload the tablet, no rebuild.
       - ./deck:/app/deck:ro

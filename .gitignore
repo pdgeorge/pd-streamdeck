@@ -13,5 +13,8 @@ songs/**/*.flac
 songs/**/*.opus
 !songs/**/.gitkeep
 
+# Runtime state: track ratings. Yours, not the project's.
+data/
+
 # Local overrides of the button layout
 deck.local.yaml

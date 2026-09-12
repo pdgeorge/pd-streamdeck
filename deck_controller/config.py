@@ -26,6 +26,7 @@ KNOWN_ACTIONS = {
     "obs.stream",
     "obs.record",
     "music.mood",
+    "music.rate",
     "music.stop",
     "music.skip",
     "music.volume",
@@ -40,6 +41,9 @@ REQUIRED_KEYS = {
     "obs.mute": ("input",),
     "obs.filter": ("source", "filter"),
     "music.mood": ("mood",),
+    # Required so a rate button with no delta fails at load rather than
+    # quietly defaulting to +1 the first time you press it mid-stream.
+    "music.rate": ("delta",),
     "bus.publish": ("type",),
 }
 

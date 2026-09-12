@@ -47,17 +47,29 @@ The Pi is `192.168.20.14` on the LAN, or `dabi` over Tailscale. Deployed at `~/p
 
 ## What's on the deck
 
-Three pages of eight, all defined in [`deck.yaml`](deck.yaml):
+Three pages, all defined in [`deck.yaml`](deck.yaml):
 
 | Page | Buttons |
 |---|---|
 | **Scenes** | Starting · Just Chatting · Main · Screen · BRB · Parenting · Webcam · End |
-| **Music** | Sad · Hype · Chill · Tension · Skip · Stop · Quieter · Louder |
+| **Music** | Sad · Hype · Chill · Tension · Skip · Stop · Quieter · Louder · +1 · -1 |
 | **Live** | Mic · Discord · Desktop · Alerts · Record · Stream · Dabi Says · Billboard |
 
 Scene buttons highlight green when that scene is live. Mute buttons glow while muted. Record and Stream pulse red when active and need **two taps** (`confirm: true`). A button naming something OBS doesn't have renders greyed with a dashed amber border and shows the reason on tap.
 
-Above the grid, a transport bar carries the **volume slider** — always visible, even with nothing playing, so you can set the level before it hits the stream — plus the current track and progress.
+Above the grid, a transport bar carries the **volume slider** — always visible, even with nothing playing, so you can set the level before it hits the stream — plus the current track, its rating, progress, and a **track picker** for going straight to one song.
+
+### Ratings
+
+**+1** and **-1** rate whatever is playing. A rating changes how often that track comes up in its mood: **+1 doubles the odds, -1 halves them**, and the scale stops at ±3 — so a favourite lands about eight times as often as a track you've buried, and nothing is ever excluded outright. A track at -3 still surfaces occasionally; if you want it gone, delete the file.
+
+The current track's score shows next to the mood in the transport bar, green for positive and red for negative, and hides itself entirely when a track is unrated. Ratings also appear beside each track in the picker.
+
+The no-repeat window still applies on top of the weighting, so even a +3 track can't play twice in a row — it comes up more often, not constantly.
+
+Scores live in `data/ratings.json`, keyed by `mood/filename`. **Renaming a file resets its rating**, which is the trade for not maintaining a database of file hashes. The file is written on every rating and is safe to edit or delete by hand; deleting it just resets everything to neutral.
+
+The picker below the volume slider lists every track grouped by mood. Choosing one plays it immediately and drops it into the no-repeat history, so letting the mood roll on afterwards won't replay it straight away. The list reloads after each rating so the scores stay current.
 
 ## Setup
 
@@ -165,10 +177,12 @@ Every `/api/*` call takes `X-Deck-Token: <token>` (or `?token=`). `/healthz` is 
 | POST | `/api/obs/stream` | `{"mode": "toggle"}` — `start`/`stop`/`toggle` |
 | POST | `/api/obs/record` | `{"mode": "toggle"}` |
 | GET | `/api/music/moods` | — |
-| POST | `/api/music/play` | `{"mood": "sad"}` |
+| GET | `/api/music/tracks` | — every track with its rating, grouped by mood |
+| POST | `/api/music/play` | `{"mood": "sad"}`, or `{"mood": "sad", "track": "undertale_memory.mp3"}` for a specific one |
 | POST | `/api/music/skip` | — (400 if nothing is playing) |
 | POST | `/api/music/stop` | — |
 | POST | `/api/music/volume` | `{"level": 0.4}` (absolute, what the slider sends) or `{"delta": -0.1}` (what the buttons send) |
+| POST | `/api/music/rate` | `{"delta": 1}` — rates the current track (400 if nothing is playing) |
 | POST | `/api/music/rescan` | after adding files |
 | POST | `/api/bus/publish` | `{"type": "dabi.tts.ready", "exchange": "dabi_events", "payload": {...}}` |
 | POST | `/api/action` | `{"action": "music.mood", "params": {"mood": "hype"}}` |
@@ -256,6 +270,7 @@ The service logs an explicit one-shot hint when it detects this.
 
 - **The music library is not in git.** `.gitignore` drops audio but keeps the mood folders. Back it up separately — a fresh clone will not have it.
 - **A mood folder with one file will repeat it**, because there's nothing else to pick. The no-repeat window caps itself at one less than the folder size.
+- **Ratings need the `./data` volume.** `songs/` is mounted read-only on purpose, so track scores cannot live next to the audio. If `DECK_STATE_DIR` isn't writable the deck still runs and still rates — it logs `Ratings are in memory only` once and forgets them on restart. Adding the volume to an already-running deployment needs `docker compose up -d` to recreate the container; a `rescan` won't do it.
 - **Normalise loudness before adding files.** Sources master at wildly different levels, and with a random picker that means `Hype` blowing the doors off right after `Sad` whispered. The existing library is two-pass `loudnorm`'d to −16 LUFS; there's an ffmpeg recipe in [`songs/SOURCES.md`](songs/SOURCES.md).
 - **`Mic/Aux` and `Desktop Audio` are dead Windows leftovers** in the OBS config. They're `wasapi_*` kinds, which Linux OBS can't drive — pressing one returns *"The specified input does not support audio."* The live pulse inputs are `Microphone`, `Discord`, `Default` (desktop audio) and `VR Microphone`. `GET /api/state` lists every audio-capable input under `obs.muted`.
 - **Some scenes carry no microphone.** Audio sources are per-scene in OBS, so switching scene changes what's audible. As audited: `Cam` and `RandomBS` have **no audio sources at all** — switching to either kills mic, desktop and Discord simultaneously; `Backpack RTSP`, `Parenting` and `FullscreenVid` carry no mic. The Scenes page deliberately covers only the eight stream-ready scenes; `Cam` and `RandomBS` are left off on purpose. Re-audit after editing scenes with `GET /api/state`.
